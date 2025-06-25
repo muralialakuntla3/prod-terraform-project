@@ -47,6 +47,10 @@ terraform-vpc-project/
 
 ### `modules/vpc/main.tf`
 ```hcl
+terraform {
+  backend "s3" {}
+}
+
 resource "aws_vpc" "this" {
   cidr_block           = var.cidr_block
   enable_dns_support   = true
@@ -59,9 +63,15 @@ resource "aws_vpc" "this" {
 
 ### `variables.tf`
 ```hcl
-variable "cidr_block" {}
-variable "name" {}
-variable "region" {}
+variable "cidr_block" {
+  type        = string
+  description = "CIDR block for the VPC"
+}
+
+variable "name" {
+  type        = string
+  description = "Name of the VPC"
+}
 ```
 
 ### `provider.tf`
@@ -73,12 +83,17 @@ terraform {
       version = ">= 5.0"
     }
   }
-  backend "s3" {}
 }
 
 provider "aws" {
   region = var.region
 }
+
+variable "region" {
+  type        = string
+  description = "AWS Region to deploy"
+}
+
 ```
 
 ---
@@ -90,7 +105,7 @@ provider "aws" {
 remote_state {
   backend = "s3"
   config = {
-    bucket = "my-terraform-backend-bucket"
+    bucket = "my-terragrunt-backend-bucket"
     key    = "${path_relative_to_include()}/terraform.tfstate"
     region = "us-west-1"
   }
@@ -197,25 +212,33 @@ jobs:
       AWS_REGION: ${{ vars.AWS_REGION }}
       TF_VAR_REGION: ${{ vars.AWS_REGION }}
 
+    strategy:
+      matrix:
+        action: [init, plan, apply]
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ vars.AWS_REGION }}
-      - uses: ./.github/actions/setup-terraform
+          aws-region: ${{ vars.AWS_REGION }}  
 
-      - name: Terragrunt Init
-        run: terragrunt init
+      - name: Setup Terraform and Terragrunt
+        uses: ./.github/actions/setup-terraform
 
-      - name: Terragrunt Plan
-        run: terragrunt plan -out=plan.tfplan
-
-      - name: Terragrunt Apply
+      - name: Terragrunt ${{ matrix.action }}
         run: |
-          if [ -f plan.tfplan ]; then
-            terragrunt apply -auto-approve plan.tfplan
+          echo "Running terragrunt ${{ matrix.action }}"
+          if [[ "${{ matrix.action }}" == "plan" ]]; then
+            terragrunt plan 
+          elif [[ "${{ matrix.action }}" == "apply" ]]; then
+            terragrunt apply -auto-approve
+          else
+            terragrunt ${{ matrix.action }}
           fi
 ```
 
@@ -227,6 +250,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
+        description: "Select the environment to destroy"
         required: true
         type: choice
         options: [dev, qa, prod]
@@ -247,16 +271,22 @@ jobs:
       TF_VAR_REGION: ${{ vars.AWS_REGION }}
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v2
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
-      - uses: ./.github/actions/setup-terraform
 
-      - name: Terragrunt Destroy
+      - name: Setup Terraform and Terragrunt
+        uses: ./.github/actions/setup-terraform
+
+      - name: Destroy Infrastructure
         run: terragrunt destroy -auto-approve
+
 ```
 
 ---

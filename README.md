@@ -1,4 +1,4 @@
-# 🚀 Terraform Infrastructure Deployment with Terragrunt & GitHub Actions
+# Terraform Infrastructure Deployment with Terragrunt & GitHub Actions
 
 This project automates provisioning and destruction of AWS infrastructure (custom VPCs) across multiple environments (`dev`, `qa`, `prod`) using:
 
@@ -12,7 +12,7 @@ This project automates provisioning and destruction of AWS infrastructure (custo
 
 ---
 
-## 🧱 Project Structure
+## Project Structure
 
 ```
 terraform-vpc-project/
@@ -43,7 +43,7 @@ terraform-vpc-project/
 
 ---
 
-## 🌍 Terraform VPC Module
+## Terraform VPC Module
 
 ### `modules/vpc/main.tf`
 ```hcl
@@ -98,7 +98,7 @@ variable "region" {
 
 ---
 
-## 🌐 Terragrunt Configuration
+## Terragrunt Configuration
 
 ### `terragrunt.hcl`
 ```hcl
@@ -131,13 +131,13 @@ inputs = {
 
 ---
 
-## ⚙️ GitHub Actions Setup
+## GitHub Actions Setup
 
-### 🔐 GitHub Secrets
+### GitHub Secrets
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 
-### 🔧 GitHub Variables (optional fallback)
+### GitHub Variables (optional fallback)
 - `AWS_REGION = us-west-1`
 
 ---
@@ -164,7 +164,7 @@ runs:
 
 ---
 
-## 🚀 Workflows
+## Workflows
 
 ### `ci-cd.yml`
 ```yaml
@@ -291,7 +291,7 @@ jobs:
 
 ---
 
-## ✅ Summary
+## Summary
 
 | Component       | Tool       | Purpose                                 |
 |----------------|------------|-----------------------------------------|

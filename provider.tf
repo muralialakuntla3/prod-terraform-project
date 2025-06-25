@@ -5,8 +5,6 @@ terraform {
       version = ">= 5.0"
     }
   }
-
-  backend "s3" {}  # <-- REQUIRED placeholder for Terragrunt's remote_state to inject config
 }
 
 provider "aws" {

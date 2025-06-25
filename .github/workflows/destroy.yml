@@ -1,0 +1,42 @@
+name: Destroy Terraform Environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Select the environment to destroy"
+        required: true
+        type: choice
+        options:
+          - dev
+          - qa
+          - prod
+
+concurrency:
+  group: destroy-${{ github.event.inputs.environment }}
+  cancel-in-progress: true
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: envs/${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Setup Terraform and Terragrunt
+        uses: ./.github/actions/setup-terraform
+
+      - name: Destroy Infrastructure
+        run: terragrunt destroy -auto-approve

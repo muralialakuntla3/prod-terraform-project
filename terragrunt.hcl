@@ -3,7 +3,7 @@ remote_state {
   config = {
     bucket = "my-terragrunt-backend-bucket"
     key    = "${path_relative_to_include()}/terraform.tfstate"
-    region = "us-west-1"
+    region = get_env("TF_VAR_REGION", "us-west-1")
   }
 }
 

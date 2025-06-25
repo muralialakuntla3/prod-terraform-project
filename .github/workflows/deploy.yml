@@ -36,6 +36,9 @@ jobs:
 
       - name: Setup Terraform and Terragrunt
         uses: ./.github/actions/setup-terraform
+        
+      - name: Terragrunt Init
+        run: terragrunt init
 
       - name: Terragrunt ${{ matrix.action }}
         run: |

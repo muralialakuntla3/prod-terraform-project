@@ -37,7 +37,7 @@ terraform-vpc-project/
 │   │   └── terragrunt.hcl
 │   └── prod/
 │       └── terragrunt.hcl
-├── root.hcl
+├── terragrunt.hcl
 └── README.md
 ```
 

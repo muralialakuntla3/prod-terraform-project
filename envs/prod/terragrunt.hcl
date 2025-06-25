@@ -9,5 +9,5 @@ terraform {
 inputs = {
   cidr_block = "10.2.0.0/16"
   name       = "prod-vpc"
-  region     = getenv("TF_VAR_REGION")  # <-- Pass region from env var
+  region     = get_env("TF_VAR_REGION")  # <-- Pass region from env var
 }

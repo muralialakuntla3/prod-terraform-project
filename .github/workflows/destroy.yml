@@ -23,6 +23,9 @@ jobs:
       run:
         shell: bash
         working-directory: envs/${{ github.event.inputs.environment }}
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      TF_VAR_REGION: ${{ vars.AWS_REGION }}
 
     steps:
       - name: Checkout Code

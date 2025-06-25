@@ -18,6 +18,9 @@ jobs:
       run:
         shell: bash
         working-directory: envs/${{ inputs.environment }}
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      TF_VAR_REGION: ${{ vars.AWS_REGION }}
 
     strategy:
       matrix:

@@ -37,5 +37,13 @@ jobs:
       - name: Setup Terraform and Terragrunt
         uses: ./.github/actions/setup-terraform
 
-      - name: Run Terragrunt ${{ matrix.action }}
-        run: terragrunt ${{ matrix.action }} -auto-approve
+      - name: Terragrunt ${{ matrix.action }}
+        run: |
+          echo "Running terragrunt ${{ matrix.action }}"
+          if [[ "${{ matrix.action }}" == "plan" ]]; then
+            terragrunt plan -out=plan.tfplan
+          elif [[ "${{ matrix.action }}" == "apply" ]]; then
+            terragrunt apply -auto-approve plan.tfplan || terragrunt apply -auto-approve
+          else
+            terragrunt ${{ matrix.action }}
+          fi

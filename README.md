@@ -29,7 +29,6 @@ terraform-vpc-project/
 │       ├── main.tf
 │       ├── variables.tf
 │       ├── outputs.tf
-│       ├── provider.tf
 ├── envs/
 │   ├── dev/
 │   │   └── terragrunt.hcl
@@ -37,7 +36,8 @@ terraform-vpc-project/
 │   │   └── terragrunt.hcl
 │   └── prod/
 │       └── terragrunt.hcl
-├── terragrunt.hcl
+├── terragrunt.
+│── provider.tf
 └── README.md
 ```
 

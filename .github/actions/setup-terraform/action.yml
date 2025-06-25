@@ -1,0 +1,16 @@
+name: "Setup Terraform"
+description: "Sets up Terraform & Terragrunt"
+runs:
+  using: "composite"
+  steps:
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.5.0
+
+    - name: Install Terragrunt
+      shell: bash
+      run: |
+        curl -L -o terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v0.82.0/terragrunt_linux_amd64
+        chmod +x terragrunt
+        sudo mv terragrunt /usr/local/bin/

@@ -1,0 +1,17 @@
+name: Terraform CI/CD Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        required: true
+        options: [dev, qa, prod]
+        description: "Select environment"
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: ${{ github.event.inputs.environment }}
+    secrets: inherit
